@@ -4,31 +4,35 @@ var userClickedPattern = [];
 var randomChosenColor;
 var level = 0;
 
+// ゲームスタート
 $('body').keypress(function () {
 
     nextSequence();
 });
 
-function nextSequence() {
+$('.btn').on('click', function (event) {
+    // クリックされた要素のIDを取得
+    var clickedColorID = event.target.id;
+    playColorSound(clickedColorID);
+    animatePress(clickedColorID);
+    userClickedPattern.push(clickedColorID);
 
+    checkAnswer(userClickedPattern.length - 1);
+});
+
+function nextSequence() {
+    userClickedPattern = [];
+    level++;
     $('h1').text('level ' + level);
+    // 0-3の乱数を生成
     var randomNumber = Math.floor(Math.random() * 4);
+    // buttonColorsに含まれているcolorから1つピックアップ
     randomChosenColor = buttonColors[randomNumber];
 
     gamePattern.push(randomChosenColor);
 
     $('#' + randomChosenColor).fadeOut(100).fadeIn(100);
     playColorSound(randomChosenColor);
-
-    $('.btn').on('click', function (event) {
-        // console.log(event.target);
-        var clickedColorID = event.target.id;
-        playColorSound(clickedColorID);
-        animatePress(clickedColorID);
-        userClickedPattern.push(clickedColorID);
-
-        checkAnswer(level);
-    });
 }
 
 function playColorSound(colorName) {
@@ -47,15 +51,16 @@ function animatePress(currentColor) {
     }, 100);
 }
 
-function checkAnswer() {
+function checkAnswer(currentLevel) {
 
-    if (userClickedPattern[level] === gamePattern[level]) {
-        // console.log('success');
-        level++;
+    if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
+        console.log('success');
 
-        setTimeout(() => {
-            nextSequence();
-        }, 1000);
+        if (userClickedPattern.length === gamePattern.length) {
+            setTimeout(() => {
+                nextSequence();
+            }, 1000);
+        }
     } else {
         console.log('wrong');
     }
