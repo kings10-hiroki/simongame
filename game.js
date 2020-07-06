@@ -3,11 +3,15 @@ var gamePattern = [];
 var userClickedPattern = [];
 var randomChosenColor;
 var level = 0;
+var started = false;
 
 // ゲームスタート
 $('body').keypress(function () {
 
-    nextSequence();
+    if (!started) {
+        nextSequence();
+        started = true;
+    }
 });
 
 $('.btn').on('click', function (event) {
@@ -73,5 +77,13 @@ function checkAnswer(currentLevel) {
         }, 200);
 
         $('h1').text('Game Over, Press Any Key to Restart');
+
+        startOver();
     }
+}
+
+function startOver() {
+    level = 0;
+    gamePattern = [];
+    started = false;
 }
